@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import base64
 import pytz
+import urllib3
 
 
 normal = {
@@ -16,23 +17,26 @@ rovid = {
 }
 
 
-def autoplay_audio(file_path):
-    st.write(file_path)
-    with open(file_path, "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data).decode()
-        md = f"""
-        <div class="blank">
-            <audio controls autoplay="true">
-            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-            </audio>
-        </div>
-        """
+def load_sound(url):
+    http = urllib3.PoolManager()
+    data = http.request("GET", url, preload_content=False).read()
+    b64 = base64.b64encode(data).decode()
+    return b64
 
-        st.markdown(
-            md,
-            unsafe_allow_html=True
-        )
+
+def autoplay_audio(audio):
+    md = f"""
+    <div class="blank">
+        <audio controls autoplay="true">
+        <source src="data:audio/mp3;base64,{audio}" type="audio/mp3">
+        </audio>
+    </div>
+    """
+
+    st.markdown(
+        md,
+        unsafe_allow_html=True
+    )
 
 
 def st_css(item, value):
@@ -71,6 +75,12 @@ if csengetes == 'Normál':
 else:
     csengetesi_rend = rovid
 
+be_hang = load_sound(
+    'https://raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
+ki_hang = load_sound(
+    'https://raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
+
+
 if st.sidebar.toggle('Start'):
     while True:
         now = datetime.now(pytz.timezone('Europe/Budapest'))
@@ -80,11 +90,9 @@ if st.sidebar.toggle('Start'):
 
         if current_time in csengetesi_rend['be']:
             msg_div.header('ÓRA VAN')
-            autoplay_audio(
-                'https://raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
+            autoplay_audio(be_hang)
         elif current_time in csengetesi_rend['ki']:
             msg_div.header('SZÜNET VAN')
-            autoplay_audio(
-                'https://raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
+            autoplay_audio(ki_hang)
 
         time.sleep(1)
