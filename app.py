@@ -17,7 +17,7 @@ rovid = {
 
 
 def autoplay_audio(file_path):
-
+    sr.write(file_path)
     with open(file_path, "rb") as f:
         data = f.read()
         b64 = base64.b64encode(data).decode()
