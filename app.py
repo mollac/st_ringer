@@ -43,14 +43,9 @@ def st_css(item, value):
     st.markdown(f'<style>{item}{value}</style>', unsafe_allow_html=True)
 
 
-# st_css("a", "{text-decoration:none;}")
-# st_css("a:hover", "{text-decoration:none; color:red;")
-# # st_css("#MainMenu", "{visibility: hidden;}")
-# st_css("footer", "{visibility: visible}")
-# st_css(".css-12oz5g7", "{padding-top: 0rem;}")
-# st_css("tbody th", "{display:none}")
 st_css(".blank", "{display:none}")
-st_css("h1", "{text-align: center; font-size:4.5rem}")
+st_css("h1", "{text-align: center; font-size:4rem}")
+st_css("h2", "{text-align: center; font-size:3rem; color: rgba(54,63,73,0.8)}")
 st_css("p", "{text-align: center; font-size:1rem}")
 
 st.write('# Csengető program')
@@ -86,13 +81,19 @@ if st.sidebar.toggle('Start'):
         now = datetime.now(pytz.timezone('Europe/Budapest'))
         current_time = now.strftime("%H:%M:%S")
 
+        for i in range(len(csengetesi_rend['be'])):
+            start_time = csengetesi_rend['be'][i]
+            end_time = csengetesi_rend['ki'][i]
+            if start_time < current_time < end_time:
+                msg_div.header(f'{i}. óra: {start_time[:5]} - {end_time[:5]}')
+            else:
+                msg_div.header(f'SZÜNET')
+
         time_div.title(current_time)
 
         if current_time in csengetesi_rend['be']:
-            msg_div.header('ÓRA VAN')
             autoplay_audio(be_hang)
         elif current_time in csengetesi_rend['ki']:
-            msg_div.header('SZÜNET VAN')
             autoplay_audio(ki_hang)
 
         time.sleep(1)
