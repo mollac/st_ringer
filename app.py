@@ -3,6 +3,7 @@ import streamlit as st
 import time
 from datetime import datetime
 import base64
+import pytz
 
 
 normal = {
@@ -72,7 +73,7 @@ else:
 
 if st.sidebar.toggle('Start'):
     while True:
-        now = datetime.now()
+        now = datetime.now(pytz.timezone('Europe/Budapest'))
         current_time = now.strftime("%H:%M:%S")
 
         time_div.title(current_time)
