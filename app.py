@@ -80,10 +80,10 @@ if st.sidebar.toggle('Start'):
         if current_time in csengetesi_rend['be']:
             msg_div.header('ÓRA VAN')
             autoplay_audio(
-                'https://github.com/mollac/st_ringer/blob/73286e818a14e0697bfb18a6060405a27832039b/be.mp3')
+                'raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
         elif current_time in csengetesi_rend['ki']:
             msg_div.header('SZÜNET VAN')
             autoplay_audio(
-                'https://github.com/mollac/st_ringer/blob/4df60313629449b37bdde28f49bfac570debd9f4/ki.mp3')
+                'raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
 
         time.sleep(1)
