@@ -85,7 +85,8 @@ if st.sidebar.toggle('Start'):
             start_time = csengetesi_rend['be'][i]
             end_time = csengetesi_rend['ki'][i]
             if start_time < current_time < end_time:
-                msg_div.header(f'{i}. óra: {start_time[:5]} - {end_time[:5]}')
+                msg_div.header(
+                    f'{i+1}. óra: {start_time[:5]} - {end_time[:5]}')
             else:
                 msg_div.header(f'SZÜNET')
 
