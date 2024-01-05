@@ -84,6 +84,7 @@ with st.expander("Órabeosztások", False):
 
 time_div = st.empty()
 msg_div = st.empty()
+debug = st.empty()
 
 
 csengetes = st.sidebar.radio(
@@ -104,18 +105,18 @@ ki_hang = load_sound(
 if st.sidebar.toggle('Start'):
     while True:
         now = datetime.now(pytz.timezone('Europe/Budapest'))
-        current_time = now.strftime("%H:%M:%S")
+        current_time = time(now.hour, now.minute, now.second)
+        time_div.title(current_time)
 
         for i in range(len(csengetesi_rend['be'])):
             start_time = csengetesi_rend['be'][i].strftime("%H:%M:%S")
             end_time = csengetesi_rend['ki'][i].strftime("%H:%M:%S")
-            if start_time < current_time < end_time:
+            if start_time < current_time.strftime("%H:%M:%S") < end_time:
                 msg_div.header(
-                    f'{i+1}. óra: {start_time[:5]} - {end_time[:5]}')
+                    f'{i+1}. óra: {start_time} - {end_time}')
+                break
             else:
                 msg_div.header(f'SZÜNET')
-
-        time_div.title(current_time)
 
         if current_time in csengetesi_rend['be']:
             autoplay_audio(be_hang)
