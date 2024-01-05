@@ -1,19 +1,32 @@
 from numpy import empty
 import streamlit as st
-import time
-from datetime import datetime
+from datetime import datetime, time
+import time as t
 import base64
 import pytz
 import urllib3
+import pandas as pd
+
+
+# normal = {
+#     'be': ['08:00:00', '08:50:00', '09:50:00', '10:50:00', '11:45:00', '12:40:00', '13:30:00', '14:20:00'],
+#     'ki': ['08:45:00', '09:40:00', '10:35:00', '11:35:00', '12:30:00', '13:25:00', '14:15:00', '15:05:00']
+# }
+
+# rovid = {
+#     'be': ['08:00:00', '08:40:00', '09:20:00', '10:00:00', '10:40:00', '11:20:00', '11:55:00', '12:30:00'],
+#     'ki': ['08:30:00', '09:10:00', '09:50:00', '10:30:00', '11:10:00', '11:50:00', '12:25:00', '13:00:00']
+# }
 
 
 normal = {
-    'be': ['08:00:00', '08:50:00', '09:50:00', '10:50:00', '11:45:00', '12:40:00', '13:30:00', '14:20:00'],
-    'ki': ['08:45:00', '09:40:00', '10:35:00', '11:35:00', '12:30:00', '13:25:00', '14:15:00', '15:05:00']
+    'be': [time(8, 0, 0), time(8, 50, 0), time(9, 50, 0), time(10, 50, 0), time(11, 45, 0), time(12, 45, 0), time(13, 30, 0), time(14, 20, 0)],
+    'ki': [time(8, 45, 0), time(9, 40, 0), time(10, 35, 0), time(11, 35, 0), time(12, 30, 0), time(13, 25, 0), time(14, 15, 0), time(15, 5, 0)]
 }
+
 rovid = {
-    'be': ['08:00:00', '08:40:00', '09:20:00', '10:00:00', '10:40:00', '11:20:00', '11:55:00', '12:30:00'],
-    'ki': ['08:30:00', '09:10:00', '09:50:00', '10:30:00', '11:10:00', '11:50:00', '12:25:00', '13:00:00']
+    'be': [time(8, 0, 0), time(8, 40, 0), time(9, 20, 0), time(10, 0, 0), time(10, 40, 0), time(11, 20, 0), time(11, 55, 0), time(12, 30, 0)],
+    'ki': [time(8, 30, 0), time(9, 10, 0), time(9, 50, 0), time(10, 30, 0), time(11, 10, 0), time(11, 50, 0), time(12, 25, 0), time(13, 0, 0)]
 }
 
 
@@ -44,16 +57,28 @@ def st_css(item, value):
 
 
 st_css(".blank", "{display:none}")
-st_css("h1", "{text-align: center; font-size:4rem}")
-st_css("h2", "{text-align: center; font-size:3rem; color: rgba(54,63,73,0.8)}")
+st_css(
+    "h1", "{text-align: center; font-size:3.5rem; color: rgba(184,183,143,0.8)}")
+st_css(
+    "h2", "{text-align: center; font-size:2.5rem; color: rgba(154,163,173,0.8)}")
 st_css("p", "{text-align: center; font-size:1rem}")
 
 st.write('# Csengető program')
+
 with st.expander("Órabeosztások", False):
     c1, c2 = st.columns(2)
     c1.write('Normál')
     c2.write('Rövidített')
-    normal = c1.data_editor(normal, width=300)
+    normal = c1.data_editor(normal,
+                            column_config={
+                                "be": st.column_config.TimeColumn(
+                                    "Becsengetés",
+                                    min_value=time(8, 0, 0),
+                                    max_value=time(16, 0, 0),
+                                    format="hh:mm:ss"
+                                ),
+                            },
+                            width=300)
 
     rovid = c2.data_editor(rovid, width=300)
 
@@ -82,8 +107,8 @@ if st.sidebar.toggle('Start'):
         current_time = now.strftime("%H:%M:%S")
 
         for i in range(len(csengetesi_rend['be'])):
-            start_time = csengetesi_rend['be'][i]
-            end_time = csengetesi_rend['ki'][i]
+            start_time = csengetesi_rend['be'][i].strftime("%H:%M:%S")
+            end_time = csengetesi_rend['ki'][i].strftime("%H:%M:%S")
             if start_time < current_time < end_time:
                 msg_div.header(
                     f'{i+1}. óra: {start_time[:5]} - {end_time[:5]}')
@@ -97,4 +122,4 @@ if st.sidebar.toggle('Start'):
         elif current_time in csengetesi_rend['ki']:
             autoplay_audio(ki_hang)
 
-        time.sleep(1)
+        t.sleep(1)
