@@ -30,13 +30,6 @@ rovid = {
 }
 
 
-def load_sound(url):
-    http = urllib3.PoolManager()
-    data = http.request("GET", url, preload_content=False).read()
-    b64 = base64.b64encode(data).decode()
-    return b64
-
-
 def autoplay_audio(audio):
     md = f"""
     <div class="blank">
@@ -52,6 +45,21 @@ def autoplay_audio(audio):
     )
 
 
+def load_sound(url):
+    http = urllib3.PoolManager()
+    data = http.request("GET", url, preload_content=False).read()
+    b64 = base64.b64encode(data).decode()
+    return b64
+
+
+if 'be_hang' not in st.session_state:
+    st.session_state.be_hang = load_sound(
+        'https://raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
+if 'ki_hang' not in st.session_state:
+    st.session_state.ki_hang = load_sound(
+        'https://raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
+
+
 def st_css(item, value):
     st.markdown(f'<style>{item}{value}</style>', unsafe_allow_html=True)
 
@@ -62,10 +70,26 @@ st_css(
 st_css(
     "h2", "{text-align: center; font-size:2.5rem; color: rgba(154,163,173,0.8)}")
 st_css("p", "{text-align: center; font-size:1rem}")
+st_css('div[data-testid="stMetric"]', '''{background-color: rgba(28, 131, 225, 0.1);
+			border: 1px solid rgba(28, 131, 225, 0.1);
+			padding: 5% 5% 5% 5%;
+			border-radius: 5px;
+			color: rgb(30, 103, 119);
+			overflow-wrap: break-word;
+            text-align: center;
+            margin: auto;
+            width: 60%
+		}''')
+
+st_css('div[data-testid="stMetric"] label',
+       '{width: fit-content; margin: auto; font-size:2rem;')
+st_css('div[data-testid="stMetric"] p',
+       '{width: fit-content; margin: auto; font-size:2rem;')
+
 
 st.write('# Csengető program')
 
-with st.expander("Órabeosztások", False):
+with st.expander("Csengetési rend", False):
     c1, c2 = st.columns(2)
     c1.write('Normál')
     c2.write('Rövidített')
@@ -96,12 +120,6 @@ if csengetes == 'Normál':
 else:
     csengetesi_rend = rovid
 
-be_hang = load_sound(
-    'https://raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
-ki_hang = load_sound(
-    'https://raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
-
-
 if st.sidebar.toggle('Start'):
     while True:
         now = datetime.now(pytz.timezone('Europe/Budapest'))
@@ -112,15 +130,18 @@ if st.sidebar.toggle('Start'):
             start_time = csengetesi_rend['be'][i].strftime("%H:%M:%S")
             end_time = csengetesi_rend['ki'][i].strftime("%H:%M:%S")
             if start_time < current_time.strftime("%H:%M:%S") < end_time:
-                msg_div.markdown(
-                    f'## *{i+1}. óra:* **{start_time[:5]} - {end_time[:5]}**')
+                msg_div.metric(
+                    label=f'{i+1}.óra', value=f'{start_time[:5]} - {end_time[:5]}')
+                # msg_div.markdown(
+                #     f'## *{i+1}. óra:* **{start_time[:5]} - {end_time[:5]}**')
                 break
             else:
-                msg_div.header(f'SZÜNET')
+                # msg_div.header(f'SZÜNET')
+                msg_div.metric(label='10 perc', value='SZÜNET')
 
         if current_time in csengetesi_rend['be']:
-            autoplay_audio(be_hang)
+            autoplay_audio(st.session_state.be_hang)
         elif current_time in csengetesi_rend['ki']:
-            autoplay_audio(ki_hang)
+            autoplay_audio(st.session_state.ki_hang)
 
         t.sleep(1)
