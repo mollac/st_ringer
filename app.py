@@ -20,7 +20,7 @@ import pandas as pd
 
 
 normal = {
-    'be': [time(8, 0, 0), time(8, 50, 0), time(9, 50, 0), time(10, 50, 0), time(11, 45, 0), time(12, 45, 0), time(13, 30, 0), time(14, 20, 0)],
+    'be': [time(8, 0, 0), time(8, 55, 0), time(9, 50, 0), time(10, 50, 0), time(11, 45, 0), time(12, 45, 0), time(13, 30, 0), time(14, 20, 0)],
     'ki': [time(8, 45, 0), time(9, 40, 0), time(10, 35, 0), time(11, 35, 0), time(12, 30, 0), time(13, 25, 0), time(14, 15, 0), time(15, 5, 0)]
 }
 
