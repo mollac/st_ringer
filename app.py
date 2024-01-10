@@ -52,12 +52,10 @@ def load_sound(url):
     return b64
 
 
-if 'be_hang' not in st.session_state:
-    st.session_state.be_hang = load_sound(
-        'https://raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
-if 'ki_hang' not in st.session_state:
-    st.session_state.ki_hang = load_sound(
-        'https://raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
+be_hang = load_sound(
+    'https://raw.githubusercontent.com/mollac/st_ringer/master/be.mp3')
+ki_hang = load_sound(
+    'https://raw.githubusercontent.com/mollac/st_ringer/master/ki.mp3')
 
 
 def st_css(item, value):
@@ -140,8 +138,8 @@ if st.sidebar.toggle('Start'):
                 msg_div.metric(label='10 perc', value='SZÜNET')
 
         if current_time in csengetesi_rend['be']:
-            autoplay_audio(st.session_state.be_hang)
+            autoplay_audio(be_hang)
         elif current_time in csengetesi_rend['ki']:
-            autoplay_audio(st.session_state.ki_hang)
+            autoplay_audio(ki_hang)
 
         t.sleep(1)
